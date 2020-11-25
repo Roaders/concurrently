@@ -1,13 +1,11 @@
-const { map } = require('rxjs/operators');
+import { map } from "rxjs/operators";
+import { RunningCommand } from "../../contracts";
 
+export class KillOnSignal {
+    constructor(private process: NodeJS.Process) {}
 
-module.exports = class KillOnSignal {
-    constructor({ process }) {
-        this.process = process;
-    }
-
-    handle(commands) {
-        let caughtSignal;
+    handle(commands: RunningCommand[]) {
+        let caughtSignal: string;
         ['SIGINT', 'SIGTERM', 'SIGHUP'].forEach(signal => {
             this.process.on(signal, () => {
                 caughtSignal = signal;
@@ -22,7 +20,7 @@ module.exports = class KillOnSignal {
             }));
             return new Proxy(command, {
                 get(target, prop) {
-                    return prop === 'close' ? closeStream : target[prop];
+                    return prop === 'close' ? closeStream : (target as any)[prop];
                 }
             });
         });

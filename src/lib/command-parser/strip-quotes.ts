@@ -1,5 +1,7 @@
-module.exports = class StripQuotes {
-    parse(commandInfo) {
+import { Command } from "../../contracts"
+
+export class StripQuotes {
+    public parse(commandInfo: Command) {
         let { command } = commandInfo;
 
         // Removes the quotes surrounding a command.

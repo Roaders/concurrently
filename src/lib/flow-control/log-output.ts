@@ -1,9 +1,10 @@
-module.exports = class LogOutput {
-    constructor({ logger }) {
-        this.logger = logger;
-    }
+import { RunningCommand } from "../../contracts";
+import { Logger } from "../logger";
 
-    handle(commands) {
+export class LogOutput {
+    constructor(private logger: Logger) {}
+
+    handle(commands: RunningCommand[]) {
         commands.forEach(command => {
             command.stdout.subscribe(text => this.logger.logCommandText(text.toString(), command));
             command.stderr.subscribe(text => this.logger.logCommandText(text.toString(), command));

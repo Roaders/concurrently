@@ -31,6 +31,7 @@
     "author": "Kimmo Brunfeldt",
     "license": "MIT",
     "dependencies": {
+        "@types/lodash": "^4.14.165",
         "@types/yargs": "^15.0.10",
         "chalk": "^3.0.0",
         "date-fns": "^2.16.1",
@@ -43,6 +44,7 @@
         "yargs": "^15.4.1"
     },
     "devDependencies": {
+        "@types/node": "^14.14.9",
         "coveralls": "^3.1.0",
         "eslint": "^6.8.0",
         "jest": "^25.5.4",

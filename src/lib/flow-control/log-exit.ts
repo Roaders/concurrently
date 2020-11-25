@@ -1,9 +1,10 @@
-module.exports = class LogExit {
-    constructor({ logger }) {
-        this.logger = logger;
-    }
+import { RunningCommand } from "../../contracts";
+import { Logger } from "../logger";
 
-    handle(commands) {
+export class LogExit {
+    constructor(private logger: Logger) {}
+
+    handle(commands: RunningCommand[]) {
         commands.forEach(command => command.close.subscribe(({ exitCode }) => {
             this.logger.logCommandEvent(`${command.command} exited with code ${exitCode}`, command);
         }));

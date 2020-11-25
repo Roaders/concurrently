@@ -1,19 +1,22 @@
-const chalk = require('chalk');
-const _ = require('lodash');
-const formatDate = require('date-fns/format');
+import * as defaults from "./defaults"
+import { Command, Prefix, RunningCommand } from "../contracts"
+import formatDate from "date-fns/format"
+import { reduce, escapeRegExp, get } from "lodash"
+import * as chalk from "chalk";
 
-const defaults = require('./defaults');
+export class Logger {
+    private lastChar: string | undefined;
 
-module.exports = class Logger {
-    constructor({ outputStream, prefixFormat, prefixLength, raw, timestampFormat }) {
-        this.raw = raw;
-        this.outputStream = outputStream;
-        this.prefixFormat = prefixFormat;
-        this.prefixLength = prefixLength || defaults.prefixLength;
-        this.timestampFormat = timestampFormat || defaults.timestampFormat;
+    constructor( 
+        private outputStream: NodeJS.WritableStream,
+        private prefixFormat?: Prefix | string, 
+        private prefixLength: number = defaults.prefixLength, 
+        private raw?: boolean, 
+        private timestampFormat: string = defaults.timestampFormat
+        ) {
     }
 
-    shortenText(text) {
+    shortenText(text: string) {
         if (!text || text.length <= this.prefixLength) {
             return text;
         }
@@ -28,18 +31,18 @@ module.exports = class Logger {
         return beginnning + ellipsis + end;
     }
 
-    getPrefixesFor(command) {
+    getPrefixesFor(command: RunningCommand): Record<Prefix, string> {
         return {
             none: '',
-            pid: command.pid,
-            index: command.index,
+            pid: command.pid.toString(),
+            index: command.index.toString(),
             name: command.name,
             command: this.shortenText(command.command),
             time: formatDate(Date.now(), this.timestampFormat)
         };
     }
 
-    getPrefix(command) {
+    getPrefix(command: RunningCommand) {
         const prefix = this.prefixFormat || (command.name ? 'name' : 'index');
         if (prefix === 'none') {
             return '';
@@ -47,21 +50,21 @@ module.exports = class Logger {
 
         const prefixes = this.getPrefixesFor(command);
         if (Object.keys(prefixes).includes(prefix)) {
-            return `[${prefixes[prefix]}]`;
+            return `[${(prefixes as any)[prefix]}]`;
         }
 
-        return _.reduce(prefixes, (prev, val, key) => {
-            const keyRegex = new RegExp(_.escapeRegExp(`{${key}}`), 'g');
+        return reduce(prefixes, (prev, val, key) => {
+            const keyRegex = new RegExp(escapeRegExp(`{${key}}`), 'g');
             return prev.replace(keyRegex, val);
         }, prefix);
     }
 
-    colorText(command, text) {
-        const color = _.get(chalk, command.prefixColor, chalk.gray.dim);
+    colorText(command: RunningCommand, text: string) {
+        const color = get(chalk, command.prefixColor, chalk.gray.dim);
         return color(text);
     }
 
-    logCommandEvent(text, command) {
+    logCommandEvent(text: string, command: RunningCommand) {
         if (this.raw) {
             return;
         }
@@ -69,12 +72,12 @@ module.exports = class Logger {
         this.logCommandText(chalk.gray.dim(text) + '\n', command);
     }
 
-    logCommandText(text, command) {
+    logCommandText(text: string, command: RunningCommand) {
         const prefix = this.colorText(command, this.getPrefix(command));
         return this.log(prefix + (prefix ? ' ' : ''), text);
     }
 
-    logGlobalEvent(text) {
+    logGlobalEvent(text: string) {
         if (this.raw) {
             return;
         }
@@ -82,7 +85,7 @@ module.exports = class Logger {
         this.log(chalk.gray.dim('-->') + ' ', chalk.gray.dim(text) + '\n');
     }
 
-    log(prefix, text) {
+    log(prefix: string, text: string) {
         if (this.raw) {
             return this.outputStream.write(text);
         }

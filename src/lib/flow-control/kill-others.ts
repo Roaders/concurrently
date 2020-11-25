@@ -1,13 +1,11 @@
-const _ = require('lodash');
-const { filter, map } = require('rxjs/operators');
+import { filter, map } from "rxjs/operators";
+import { KillOtherConditions, RunningCommand } from "../../contracts";
+import { Logger } from "../logger";
 
-module.exports = class KillOthers {
-    constructor({ logger, conditions }) {
-        this.logger = logger;
-        this.conditions = _.castArray(conditions);
-    }
+export class KillOthers {
+    constructor(private logger: Logger, private conditions: KillOtherConditions[] = []) {}
 
-    handle(commands) {
+    handle(commands: RunningCommand[]) {
         const conditions = this.conditions.filter(condition => (
             condition === 'failure' ||
             condition === 'success'

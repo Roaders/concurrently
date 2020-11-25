@@ -1,10 +1,27 @@
+import { Observable } from "rxjs";
 
-export interface CommandObj {
+export interface Command {
     command: string;
     env?: NodeJS.ProcessEnv;
     name?: string;
     prefixColor?: string;
 }
+
+export interface RunningCommand extends Required<Command> {
+    pid: number,
+    index: number,
+    stdin?: NodeJS.WritableStream,
+    stdout: Observable<Object>,
+    stderr: Observable<Object>,
+    close: Observable<{exitCode: number}>,
+    error: Observable<{stack: string} | string>,
+    killable: boolean;
+    kill: (signal?: string) => void;
+    start: () => void;
+}
+
+export type Prefix = 'index' | 'pid' | 'time' | 'command' | 'name' | 'none';
+export type KillOtherConditions = 'success' | 'failure';
 
 export interface Options {
     /** the default input target when reading from `inputStream`. Default: `0`. */
@@ -12,7 +29,7 @@ export interface Options {
     /** a Readable stream to read the input from, eg `process.stdin` */
     inputStream?: NodeJS.ReadableStream;
     /** an array of exiting conditions that will cause a process to kill others. Can contain any of success or failure. */
-    killOthers?: Array<'success' | 'failure'>;
+    killOthers?: KillOtherConditions[];
     /**
      * how many processes should run at once
      * @default 0
@@ -23,7 +40,7 @@ export interface Options {
     /**
      * the prefix type to use when logging processes output.
      */
-    prefix?: 'index' | 'pid' | 'time' | 'command' | 'name' | 'none' | string;
+    prefix?: Prefix | string;
     /** how many characters to show when prefixing with `command`. Default: `10` */
     prefixLength?: number;
     /** whether raw mode should be used, meaning strictly process output will be logged, without any prefixes, colouring or extra stuff. */

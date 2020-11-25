@@ -1,5 +1,7 @@
+import { Command, Options } from "../contracts";
+import _ from "lodash"
+
 const assert = require('assert');
-const _ = require('lodash');
 const spawn = require('spawn-command');
 const treeKill = require('tree-kill');
 
@@ -19,7 +21,7 @@ const defaults = {
     controllers: []
 };
 
-module.exports = (commands, options) => {
+export function concurrently(commands: (string | Command)[], options: {} = {}) {
     assert.ok(Array.isArray(commands), '[concurrently] commands should be an array');
     assert.notStrictEqual(commands.length, 0, '[concurrently] no commands provided');
 

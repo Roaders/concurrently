@@ -4,26 +4,26 @@
  *
  * Refer to tests for the meaning of the different possible values.
  */
-module.exports = {
-    defaultInputTarget: 0,
+
+export const defaultInputTarget = 0;
     // Whether process.stdin should be forwarded to child processes
-    handleInput: false,
+export const handleInput = false;
     // How many processes to run at once
-    maxProcesses: 0,
-    nameSeparator: ',',
+export const maxProcesses = 0;
+export const nameSeparator = ',';
     // Which prefix style to use when logging processes output.
-    prefix: '',
+export const prefix = '';
     // Refer to https://www.npmjs.com/package/chalk
-    prefixColors: 'gray.dim',
+export const prefixColors = 'gray.dim';
     // How many bytes we'll show on the command prefix
-    prefixLength: 10,
-    raw: false,
+export const prefixLength = 10;
+export const raw = false;
     // Number of attempts of restarting a process, if it exits with non-0 code
-    restartTries: 0,
+export const restartTries = 0;
     // How many milliseconds concurrently should wait before restarting a process.
-    restartDelay: 0,
+export const restartDelay = 0;
     // Condition of success for concurrently itself.
-    success: 'all',
+export const success = 'all';
     // Refer to https://date-fns.org/v2.0.1/docs/format
-    timestampFormat: 'yyyy-MM-dd HH:mm:ss.SSS'
-};
+export const timestampFormat = 'yyyy-MM-dd HH:mm:ss.SSS';
+
