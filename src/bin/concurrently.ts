@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 const fs = require('fs');
-const yargs = require('yargs');
 const defaults = require('../src/defaults');
 const concurrently = require('../index');
+
+import yargs from "yargs"
 
 const args = yargs
     .usage('$0 [options] <command ...>')
@@ -141,10 +142,10 @@ const args = yargs
     .epilogue(fs.readFileSync(__dirname + '/epilogue.txt', { encoding: 'utf8' }))
     .argv;
 
-const prefixColors = args.prefixColors.split(',');
-const names = (args.names || '').split(args.nameSeparator);
+const prefixColors = args.c.split(',');
+const names = (args.n || '').split(args["name-separator"]);
 
-let lastColor;
+let lastColor: string;
 concurrently(args._.map((command, index) => {
     // Use documented behaviour of repeating last colour when specifying more commands than colours
     lastColor = prefixColors[index] || lastColor;

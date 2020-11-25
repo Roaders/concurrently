@@ -9,7 +9,9 @@ const RestartProcess = require('./src/flow-control/restart-process');
 const concurrently = require('./src/concurrently');
 const Logger = require('./src/logger');
 
-module.exports = (commands, options = {}) => {
+import {CommandObj, Options} from "./contracts"
+
+module.exports = (commands: (CommandObj | string)[], options: Options = {}) => {
     const logger = new Logger({
         outputStream: options.outputStream || process.stdout,
         prefixFormat: options.prefix,
